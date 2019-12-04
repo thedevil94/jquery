@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout::main">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#newBookForm').submit(function (event) {
+                let name = $('#name').value();
+                let author = $('#author').value();
+                let price = $('#price').value();
+                let json = {"name":name, "author":author, "price": price};
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    type : "POST",
+                    data: JSON.stringify(json),
+                    url: "",
+                    success: function (book) {
+                        let respContent = "";
+                        respContent += "<span class='success'>Book was created: [";
+                        respContent += book.name + " : ";
+                        respContent += book.author + " : " ;
+                        respContent += book.price + "]</span>"
+                        $("#sBookFromResponse").html(respContent);
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="container">
+    <h1>Create new book</h1>
+    <div id="sBookFromResponse"></div>
+</div>
+<p>
+    <a href="/">Back list book</a>
+</p>
+<form th:object="${book}" id="newBookForm">
+    <table>
+        <tr>
+            <td>Book name:</td>
+            <td>
+                <input th:type="text" th:field="*{name}">
+            </td>
+        </tr>
+        <tr>
+            <td>Author:</td>
+            <td>
+                <input  th:type="text" th:field="*{author}">
+            </td>
+        </tr>
+        <tr>
+            <td>Price:</td>
+            <td>
+                <input  th:type="text" th:field="*{price}">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="submit" value="Create"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

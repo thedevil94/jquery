@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout::main">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Edit Smartphone</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#bookFromResponse').submit(function(event) {
+                let name = $('#name').val();
+                let author = $('#author').val();
+                var price = $('#price').val();
+                var json = { "name" : name, "author" : author, "price": price};
+                $.ajax({
+                    url: $("#editBookForm").attr( "action"),
+                    data: JSON.stringify(json),
+                    type: "POST",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                    },
+                    success: function(book) {
+                        var respContent = "";
+                        respContent += "<span class='success'>Book was edited: [";
+                        respContent += book.name + " : ";
+                        respContent += book.author + " : " ;
+                        respContent += book.price + "]</span>";
+                        $("#bookFromResponse").html(respContent);
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="container">
+    <h1>Edit book</h1>
+    <div>
+        <p>Here you can edit book info:</p>
+        <div id="bookFromResponse"></div>
+    </div>
+    <form id="editBookForm" th:object="${book}">
+        <table>
+            <tr>
+                <td>Book name:</td>
+                <td><input th:field="*{name}" /></td>
+            </tr>
+            <tr>
+                <td>Author:</td>
+                <td><input th:field="*{author}" /></td>
+            </tr>
+            <tr>
+                <td>Price:</td>
+                <td><input th:field="*{price}" /></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Edit" /></td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
